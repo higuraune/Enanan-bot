@@ -1,2 +1,2 @@
-# -bot--Ena-
+# Enanan-bot
 えななんbotが生まれ変わったよ♪
