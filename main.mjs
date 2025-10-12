@@ -90,6 +90,37 @@ function sendReply(message, text) {
   message.reply({ content: text });
 }
 
+// --- おみくじ抽選用関数 ---
+function lotteryByWeight(channelId, arr, weight) {
+  const channel = client.channels.cache.get(channelId);
+  if (!channel) return;
+
+  // 合計ウェイトを計算
+  const total = weight.reduce((a, b) => a + b, 0);
+  let random = Math.floor(Math.random() * total);
+
+  // 重みに応じて結果を選ぶ
+  for (let i = 0; i < weight.length; i++) {
+    if (random < weight[i]) {
+      channel.send(arr[i]);
+
+      // 特別演出
+      if (
+        arr[i] ===
+        "【えななん<:image07:894813916624990228>】　なんなん？えななん♡"
+      ) {
+        channel.send(
+          "<:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228>"
+        );
+      }
+      return;
+    }
+    random -= weight[i];
+  }
+
+  console.error("❌ lotteryByWeight: 抽選中にエラーが発生しました");
+}
+
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
