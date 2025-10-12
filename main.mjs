@@ -79,6 +79,17 @@ app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
 
+// メッセージ送信用関数（旧 sendMsg 相当）
+function sendMsg(channelId, text) {
+  const channel = client.channels.cache.get(channelId);
+  if (channel) channel.send({ content: text });
+}
+
+// リプライ送信用関数（旧 sendReply 相当）
+function sendReply(message, text) {
+  message.reply({ content: text });
+}
+
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
