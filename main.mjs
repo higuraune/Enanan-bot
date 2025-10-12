@@ -132,3 +132,27 @@ client.on("messageCreate", async (message) => {
     return;
   }
 });
+
+ // "!おみくじ
+  if (
+    message.content.match(/!おみくじ/) ||
+    (message.mentions.has(client.user) && message.content.match(/おみくじ/))
+  ) {
+    const text = `${message.member.displayName}さんの今日の運勢を占うよ♪`;
+    sendMsg(message.channel.id, text);
+
+    const arr = [
+      "【大吉】　ふふ、ふふふふふ…… ♪",
+      "【吉】　ふふ♪",
+      "【大凶】　……馬鹿に……しやがって……！",
+      "【凶】　えっと……",
+      "【中吉】　ふーん？ いいんじゃない？",
+      "【小吉】　んーー？",
+      "【末吉】　あ……",
+      "【えななん<:image07:894813916624990228>】　なんなん？えななん♡",
+    ];
+
+    const weight = [30, 30, 30, 30, 30, 30, 30, 2];
+
+    lotteryByWeight(message.channel.id, arr, weight);
+}
