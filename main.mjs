@@ -131,14 +131,14 @@ client.on("messageCreate", async (message) => {
     });
     return;
   }
-});
 
- // "!おみくじ
+  // --- おみくじ ---
   if (
     message.content.match(/!おみくじ/) ||
     (message.mentions.has(client.user) && message.content.match(/おみくじ/))
   ) {
-    const text = `${message.member.displayName}さんの今日の運勢を占うよ♪`;
+    const displayName = message.member?.displayName || message.author.username;
+    const text = `${displayName}さんの今日の運勢を占うよ♪`;
     sendMsg(message.channel.id, text);
 
     const arr = [
@@ -155,4 +155,8 @@ client.on("messageCreate", async (message) => {
     const weight = [30, 30, 30, 30, 30, 30, 30, 2];
 
     lotteryByWeight(message.channel.id, arr, weight);
-}
+    return;
+  }
+
+});
+
