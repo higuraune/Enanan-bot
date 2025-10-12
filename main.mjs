@@ -78,3 +78,46 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
+
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  // --- 簡単な例 ---
+  if (message.content.match(/おはよ/)) {
+    sendReply(message, "おはよー♪");
+    return;
+  }
+
+  if (message.content.match(/こんにちは/)) {
+    sendReply(message, "あら、こんにちは♪");
+    return;
+  }
+
+  if (message.content.match(/こんばんは/)) {
+    sendReply(message, "あら、こんばんは♪");
+    return;
+  }
+
+  if (message.content.match(/えななん/)) {
+    await message.react("🎨");
+    sendReply(message, "パシャ(自撮り)");
+    return;
+  }
+
+  if (message.content.match(/BND/)) {
+    const text =
+      "A Brand New Day 🌈❕駆け抜けた🏃‍♂️その先の先➡️ 瞬く✨未来😆はいつだって🤞遠くの空☀️☁️に描く🎨希望🙈💭💗で輝いて🌟いるんだ😉🍀";
+    sendMsg(message.channel.id, text);
+    return;
+  }
+
+  // --- 画像送信例 ---
+  if (message.content === "!カラーコード") {
+    message.channel.send({
+      files: [
+        "https://cdn.discordapp.com/attachments/960051286559055892/960088868068147261/cachedImage.png",
+      ],
+    });
+    return;
+  }
+});
