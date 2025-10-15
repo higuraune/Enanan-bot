@@ -1,7 +1,7 @@
 // main.mjs - Discord Botのメインプログラム
 
 // 必要なライブラリを読み込み
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, AttachmentBuilder } from 'discord.js';
 import dotenv from 'dotenv';
 import express from 'express';
 
@@ -22,18 +22,6 @@ const client = new Client({
 client.once('ready', () => {
     console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
     console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
-});
-
-// メッセージが送信されたときの処理
-client.on('messageCreate', (message) => {
-    // Bot自身のメッセージは無視
-    if (message.author.bot) return;
-    
-    // 「ping」メッセージに反応
-    if (message.content.toLowerCase() === 'ping') {
-        message.reply('🏓 pong!');
-        console.log(`📝 ${message.author.tag} が ping コマンドを使用`);
-    }
 });
 
 // エラーハンドリング
@@ -107,10 +95,10 @@ function lotteryByWeight(channelId, arr, weight) {
       // 特別演出
       if (
         arr[i] ===
-        "【えななん<:image07:894813916624990228>】　なんなん？えななん♡"
+        "【えななん<:image07:1427209421683167333>】　なんなん？えななん♡"
       ) {
         channel.send(
-          "<:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228><:image07:894813916624990228>"
+          "<:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333>"
         );
       }
       return;
@@ -121,7 +109,9 @@ function lotteryByWeight(channelId, arr, weight) {
   console.error("❌ lotteryByWeight: 抽選中にエラーが発生しました");
 }
 
+// メッセージが送信されたときの処理
 client.on("messageCreate", async (message) => {
+  // Bot自身のメッセージは無視  
   if (message.author.bot) return;
 
   // --- 簡単な例 ---
@@ -153,14 +143,10 @@ client.on("messageCreate", async (message) => {
     return;
   }
 
-  // --- 画像送信例 ---
+  // --- ローカル画像送信例 ---
   if (message.content === "!カラーコード") {
-    message.channel.send({
-      files: [
-        "https://cdn.discordapp.com/attachments/960051286559055892/960088868068147261/cachedImage.png",
-      ],
-    });
-    return;
+    const file = new AttachmentBuilder("./image/cachedImage.png");
+    await message.channel.send({ files: [file] });
   }
 
   // --- おみくじ ---
@@ -180,7 +166,7 @@ client.on("messageCreate", async (message) => {
       "【中吉】　ふーん？ いいんじゃない？",
       "【小吉】　んーー？",
       "【末吉】　あ……",
-      "【えななん<:image07:894813916624990228>】　なんなん？えななん♡",
+      "【えななん<:image07:1427209421683167333>】　なんなん？えななん♡",
     ];
 
     const weight = [30, 30, 30, 30, 30, 30, 30, 2];
