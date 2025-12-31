@@ -109,6 +109,43 @@ function lotteryByWeight(channelId, arr, weight) {
   console.error("❌ lotteryByWeight: 抽選中にエラーが発生しました");
 }
 
+// ===== おみくじ用 共通関数 =====
+function drawStar() {
+  const table = [
+    { star: 5, weight: 10 },
+    { star: 4, weight: 8 },
+    { star: 3, weight: 6 },
+    { star: 2, weight: 4 },
+    { star: 1, weight: 2 }
+  ];
+
+  const total = table.reduce((s, t) => s + t.weight, 0);
+  let r = Math.random() * total;
+
+  for (const t of table) {
+    if (r < t.weight) return t.star;
+    r -= t.weight;
+  }
+}
+
+function stars(n) {
+  return "★".repeat(n) + "☆".repeat(5 - n);
+}
+
+function calcRank(detail) {
+  const avg =
+    Object.values(detail).reduce((a, b) => a + b, 0) /
+    Object.values(detail).length;
+
+  if (avg >= 4.5) return "大吉";
+  if (avg >= 4.0) return "中吉";
+  if (avg >= 3.5) return "小吉";
+  if (avg >= 3.0) return "吉";
+  if (avg >= 2.5) return "末吉";
+  if (avg >= 2.0) return "凶";
+  return "大凶";
+}
+
 // メッセージが送信されたときの処理
 client.on("messageCreate", async (message) => {
   // Bot自身のメッセージは無視  
@@ -174,6 +211,69 @@ client.on("messageCreate", async (message) => {
     lotteryByWeight(message.channel.id, arr, weight);
     return;
   }
+
+// --- 本格的おみくじ（色々盛合せ） ---
+if (
+  message.content.match(/!えななんおみくじ/) ||
+  (message.mentions.has(client.user) && message.content.match(/おみくじ/))
+) {
+  const displayName =
+    message.member?.displayName || message.author.username;
+
+  // ★をそれぞれ抽選
+  const detail = {
+    願望: drawStar(),
+    恋愛: drawStar(),
+    金運: drawStar(),
+    仕事: drawStar(),
+    健康: drawStar()
+  };
+
+  // 全体運勢
+  const rank = calcRank(detail);
+
+  // ラッキーアイテム
+  const luckyItems = [
+    "赤いハンカチ",
+    "温かい飲み物",
+    "お気に入りのペン",
+    "小銭入れ",
+    "スマホの壁紙",
+    "白い靴下"
+  ];
+  const luckyItem =
+    luckyItems[Math.floor(Math.random() * luckyItems.length)];
+
+  // 総括
+  const summaryByRank = {
+    大吉: "思い切って行動してよし。",
+    中吉: "良い流れ。焦らず進め。",
+    小吉: "小さな幸せを大切に。",
+    吉: "平穏無事。現状維持が吉。",
+    末吉: "慎重に。足元を固めよ。",
+    凶: "無理は禁物。守りに入れ。",
+    大凶: "今日は静かに過ごすべし。"
+  };
+
+  // 表示
+  const embed = {
+    title: `⛩️ 御神籤 － ${rank} －`,
+    fields: [
+      { name: "願望", value: stars(detail.願望), inline: true },
+      { name: "恋愛", value: stars(detail.恋愛), inline: true },
+      { name: "金運", value: stars(detail.金運), inline: true },
+      { name: "仕事", value: stars(detail.仕事), inline: true },
+      { name: "健康", value: stars(detail.健康), inline: true },
+      { name: "🎁 ラッキーアイテム", value: luckyItem, inline: false },
+      { name: "📜 総括", value: summaryByRank[rank], inline: false }
+    ],
+    footer: { text: `${displayName} の運勢` },
+    color: 0xffcc00
+  };
+
+  message.channel.send({ embeds: [embed] });
+  return;
+}
 
 });
 
