@@ -256,16 +256,29 @@ if (
   };
 
   // 表示
-  const embed = {
+    const embed = {
     title: `⛩️ 御神籤 － ${rank} －`,
     fields: [
-      { name: "願望", value: stars(detail.願望), inline: false },
-      { name: "恋愛", value: stars(detail.恋愛), inline: false },
-      { name: "金運", value: stars(detail.金運), inline: false },
-      { name: "仕事", value: stars(detail.仕事), inline: false },
-      { name: "健康", value: stars(detail.健康), inline: false }/n,
-      { name: "🎁 ラッキーアイテム", value: luckyItem, inline: false },
-      { name: "📜 総括", value: summaryByRank[rank], inline: false }
+      {
+        name: "📊 運勢",
+        value:
+          `願望　${stars(detail.願望)}\n` +
+          `恋愛　${stars(detail.恋愛)}\n` +
+          `金運　${stars(detail.金運)}\n` +
+          `仕事　${stars(detail.仕事)}\n` +
+          `健康　${stars(detail.健康)}`,
+        inline: false
+      },
+      {
+        name: "🎁 ラッキーアイテム",
+        value: luckyItem,
+        inline: false
+      },
+      {
+        name: "📜 総括",
+        value: summary,
+        inline: false
+      }
     ],
     footer: { text: `${displayName} の運勢` },
     color: 0xffcc00
