@@ -113,10 +113,10 @@ function lotteryByWeight(channelId, arr, weight) {
 function drawStar() {
   const table = [
     { star: 5, weight: 10 },
-    { star: 4, weight: 8 },
-    { star: 3, weight: 6 },
-    { star: 2, weight: 4 },
-    { star: 1, weight: 2 }
+    { star: 4, weight: 25 },
+    { star: 3, weight: 30 },
+    { star: 2, weight: 20 },
+    { star: 1, weight: 15 }
   ];
 
   const total = table.reduce((s, t) => s + t.weight, 0);
@@ -212,13 +212,12 @@ client.on("messageCreate", async (message) => {
     return;
   }
 
-// --- 本格的おみくじ（色々盛合せ） ---
+// ===== 本格おみくじ =====
 if (
   message.content.match(/!えなみくじ/) ||
   (message.mentions.has(client.user) && message.content.match(/えなみくじ/))
 ) {
-  const displayName =
-    message.member?.displayName || message.author.username;
+  const displayName = message.member?.displayName || message.author.username;
 
   // ★をそれぞれ抽選
   const detail = {
@@ -254,9 +253,10 @@ if (
     凶: "無理は禁物。守りに入れ。",
     大凶: "今日は静かに過ごすべし。"
   };
+  const summary = summaryByRank[rank];
 
-  // 表示
-    const embed = {
+  // Embedで表示
+  const embed = {
     title: `⛩️ 御神籤 － ${rank} －`,
     fields: [
       {
