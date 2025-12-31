@@ -270,7 +270,7 @@ if (
         `学問　${stars(detail.学問)}\n` +
         `金運　${stars(detail.金運)}\n` +
         `仕事　${stars(detail.仕事)}\n` +
-        `健康　${stars(detail.健康)}`,
+        `健康　${stars(detail.健康)}\n\n`,
       inline: false
     },
     {
