@@ -169,7 +169,7 @@ client.on("messageCreate", async (message) => {
       "【えななん<:image07:1427209421683167333>】　なんなん？えななん♡",
     ];
 
-    const weight = [30, 30, 30, 30, 30, 30, 30, 2];
+    const weight = [30, 30, 30, 30, 30, 30, 30, 200];
 
     lotteryByWeight(message.channel.id, arr, weight);
     return;
