@@ -95,7 +95,7 @@ function lotteryByWeight(channelId, arr, weight) {
       // 特別演出
       if (
         arr[i] ===
-        "【えななん<:image07:1427209421683167333>】　なんなん？えななん♡"
+        "【えななん(超最高)】　なんなん？えななん♡"
       ) {
         channel.send(
           "<:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333><:image07:1427209421683167333>"
@@ -166,10 +166,10 @@ client.on("messageCreate", async (message) => {
       "【中吉】　ふーん？ いいんじゃない？",
       "【小吉】　んーー？",
       "【末吉】　あ……",
-      "【えななん<:image07:1427209421683167333>】　なんなん？えななん♡",
+      "【えななん(超最高)】　なんなん？えななん♡",
     ];
 
-    const weight = [30, 30, 30, 30, 30, 30, 30, 200];
+    const weight = [10, 10, 5, 8, 10, 10, 10, 3];
 
     lotteryByWeight(message.channel.id, arr, weight);
     return;
