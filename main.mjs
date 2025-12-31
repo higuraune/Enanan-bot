@@ -225,6 +225,7 @@ if (
   const detail = {
     願望: drawStar(),
     恋愛: drawStar(),
+    学問: drawStar(),
     金運: drawStar(),
     仕事: drawStar(),
     健康: drawStar()
@@ -258,13 +259,14 @@ if (
 
   // 表示
   const embed = {
-  title: `⛩️ えなみくじ － ${rank} －`,
+  title: `⛩️ えなみくじ - ${rank} -`,
   fields: [
     {
       name: "📊 運勢",
       value:
         `願望　${stars(detail.願望)}\n` +
         `恋愛　${stars(detail.恋愛)}\n` +
+        `学問　${stars(detail.学問)}\n` +
         `金運　${stars(detail.金運)}\n` +
         `仕事　${stars(detail.仕事)}\n` +
         `健康　${stars(detail.健康)}`,
