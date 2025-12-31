@@ -217,7 +217,8 @@ if (
   message.content.match(/!えなみくじ/) ||
   (message.mentions.has(client.user) && message.content.match(/えなみくじ/))
 ) {
-  const displayName = message.member?.displayName || message.author.username;
+  const displayName =
+    message.member?.displayName || message.author.username;
 
   // ★をそれぞれ抽選
   const detail = {
@@ -253,32 +254,18 @@ if (
     凶: "無理は禁物。守りに入れ。",
     大凶: "今日は静かに過ごすべし。"
   };
-  const summary = summaryByRank[rank];
 
-  // Embedで表示
+  // 表示
   const embed = {
     title: `⛩️ 御神籤 － ${rank} －`,
     fields: [
-      {
-        name: "📊 運勢",
-        value:
-          `願望　${stars(detail.願望)}\n` +
-          `恋愛　${stars(detail.恋愛)}\n` +
-          `金運　${stars(detail.金運)}\n` +
-          `仕事　${stars(detail.仕事)}\n` +
-          `健康　${stars(detail.健康)}`,
-        inline: false
-      },
-      {
-        name: "🎁 ラッキーアイテム",
-        value: luckyItem,
-        inline: false
-      },
-      {
-        name: "📜 総括",
-        value: summary,
-        inline: false
-      }
+      { name: "願望", value: stars(detail.願望), inline: true },
+      { name: "恋愛", value: stars(detail.恋愛), inline: true },
+      { name: "金運", value: stars(detail.金運), inline: true },
+      { name: "仕事", value: stars(detail.仕事), inline: true },
+      { name: "健康", value: stars(detail.健康), inline: true },
+      { name: "🎁 ラッキーアイテム", value: luckyItem, inline: false },
+      { name: "📜 総括", value: summaryByRank[rank], inline: false }
     ],
     footer: { text: `${displayName} の運勢` },
     color: 0xffcc00
