@@ -387,7 +387,7 @@ if (
       inline: false
     }
   ],
-  footer: { text: `${displayName} さんに、佳き巡りの一年あらんことを。` },
+  footer: { text: `${displayName} さんに、\n佳き巡りの一年あらんことを。` },
   color: 0xccaa88
 };
 
