@@ -282,7 +282,7 @@ if (
     }
   ],
   footer: { text: `${displayName} の運勢` },
-  color: 0xffcc00
+  color: ccaa88
 };
 
   message.channel.send({ embeds: [embed] });
