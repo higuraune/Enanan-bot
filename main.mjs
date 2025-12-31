@@ -215,7 +215,7 @@ client.on("messageCreate", async (message) => {
 // --- 本格的おみくじ（色々盛合せ） ---
 if (
   message.content.match(/!えなみくじ/) ||
-  (message.mentions.has(client.user) && message.content.match(/おみくじ/))
+  (message.mentions.has(client.user) && message.content.match(/えなみくじ/))
 ) {
   const displayName =
     message.member?.displayName || message.author.username;
