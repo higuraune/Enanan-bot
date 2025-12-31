@@ -137,13 +137,13 @@ function calcRank(detail) {
     Object.values(detail).reduce((a, b) => a + b, 0) /
     Object.values(detail).length;
 
-  if (avg >= 4.4) return "えななん<:image07:1427209421683167333>(超最高)";
+  if (avg >= 4.5) return "えななん<:image07:1427209421683167333>(超最高)";
   if (avg >= 4.0) return "大吉";
   if (avg >= 3.6) return "吉";
   if (avg >= 3.2) return "中吉";
   if (avg >= 2.8) return "小吉";
-  if (avg >= 2.4) return "末吉";
-  if (avg >= 2.0) return "凶";
+  if (avg >= 2.3) return "末吉";
+  if (avg >= 1.9) return "凶";
   return "大凶";
 }
 
@@ -270,22 +270,13 @@ if (
         `学問　${stars(detail.学問)}\n` +
         `金運　${stars(detail.金運)}\n` +
         `仕事　${stars(detail.仕事)}\n` +
-        `健康　${stars(detail.健康)}`,
-      inline: false
-    },
-    {
-      name: "\u200B",   // ゼロ幅スペースで空行
-      value: "\u200B",
+        `健康　${stars(detail.健康)}\n` +
+        "\u200B",　// ゼロ幅スペースで空行
       inline: false
     },
     {
       name: "🎁 ラッキーアイテム",
       value: `${luckyItem}`,
-      inline: false
-    },
-    {
-      name: "\u200B",   // ゼロ幅スペースで空行
-      value: "\u200B",
       inline: false
     },
     {
