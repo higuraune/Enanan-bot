@@ -278,16 +278,17 @@ if (
       name: "🎁 ラッキーアイテム",
       value:
         `${luckyItem}\n` +
-        "\u200B",　// ゼロ幅スペースで空行,
+        "\u200B",　// ゼロ幅スペースで空行
       inline: false
     },
     {
       name: "📜 えななんからの一言",
-      value: `${summaryByRank[rank]}`,
+        value: `${summaryByRank[rank]}\n` +
+        "\u200B",　// ゼロ幅スペースで空行
       inline: false
     }
   ],
-  footer: { text: `${displayName} の運勢` },
+  footer: { text: `${displayName} さんに、佳き巡りの一年あらんことを。` },
   color: 0xccaa88
 };
 
