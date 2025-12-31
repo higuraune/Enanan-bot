@@ -263,7 +263,7 @@ if (
       { name: "恋愛", value: stars(detail.恋愛), inline: false },
       { name: "金運", value: stars(detail.金運), inline: false },
       { name: "仕事", value: stars(detail.仕事), inline: false },
-      { name: "健康", value: stars(detail.健康), inline: false },
+      { name: "健康", value: stars(detail.健康)/n, inline: false },
       { name: "🎁 ラッキーアイテム", value: luckyItem, inline: false },
       { name: "📜 総括", value: summaryByRank[rank], inline: false }
     ],
