@@ -113,10 +113,10 @@ function lotteryByWeight(channelId, arr, weight) {
 function drawStar() {
   const table = [
     { star: 5, weight: 10 },
-    { star: 4, weight: 25 },
-    { star: 3, weight: 30 },
-    { star: 2, weight: 20 },
-    { star: 1, weight: 15 }
+    { star: 4, weight: 8 },
+    { star: 3, weight: 6 },
+    { star: 2, weight: 4 },
+    { star: 1, weight: 2 }
   ];
 
   const total = table.reduce((s, t) => s + t.weight, 0);
@@ -137,11 +137,12 @@ function calcRank(detail) {
     Object.values(detail).reduce((a, b) => a + b, 0) /
     Object.values(detail).length;
 
-  if (avg >= 4.5) return "大吉";
-  if (avg >= 4.0) return "中吉";
-  if (avg >= 3.5) return "小吉";
-  if (avg >= 3.0) return "吉";
-  if (avg >= 2.5) return "末吉";
+  if (avg >= 4.4) return "えななん<:image07:1427209421683167333>(超最高)";
+  if (avg >= 4.0) return "大吉";
+  if (avg >= 3.6) return "中吉";
+  if (avg >= 3.2) return "小吉";
+  if (avg >= 2.8) return "吉";
+  if (avg >= 2.4) return "末吉";
   if (avg >= 2.0) return "凶";
   return "大凶";
 }
@@ -257,19 +258,32 @@ if (
 
   // 表示
   const embed = {
-    title: `⛩️ 御神籤 － ${rank} －`,
-    fields: [
-      { name: "願望", value: stars(detail.願望), inline: false },
-      { name: "恋愛", value: stars(detail.恋愛), inline: false },
-      { name: "金運", value: stars(detail.金運), inline: false },
-      { name: "仕事", value: stars(detail.仕事), inline: false },
-      { name: "健康", value: stars(detail.健康), inline: false },
-      { name: "🎁 ラッキーアイテム", value: luckyItem, inline: false },
-      { name: "📜 総括", value: summaryByRank[rank], inline: false }
-    ],
-    footer: { text: `${displayName} の運勢` },
-    color: 0xffcc00
-  };
+  title: `⛩️ 御神籤 － ${rank} －`,
+  fields: [
+    {
+      name: "📊 運勢",
+      value:
+        `願望　${stars(detail.願望)}\n` +
+        `恋愛　${stars(detail.恋愛)}\n` +
+        `金運　${stars(detail.金運)}\n` +
+        `仕事　${stars(detail.仕事)}\n` +
+        `健康　${stars(detail.健康)}`,
+      inline: false
+    },
+    {
+      name: "🎁 ラッキーアイテム",
+      value: `${luckyItem}`,
+      inline: false
+    },
+    {
+      name: "📜 総括",
+      value: `${summaryByRank[rank]}`,
+      inline: false
+    }
+  ],
+  footer: { text: `${displayName} の運勢` },
+  color: 0xffcc00
+};
 
   message.channel.send({ embeds: [embed] });
   return;
