@@ -266,18 +266,18 @@ if (
         `願望　${stars(detail.願望)}\n` +
         `恋愛　${stars(detail.恋愛)}\n` +
         `金運　${stars(detail.金運)}\n` +
-        `仕事　${stars(detail.仕事)}\n\n` +
-        `健康　${stars(detail.健康)}\n`,
+        `仕事　${stars(detail.仕事)}\n` +
+        `健康　${stars(detail.健康)}`,
       inline: false
     },
     {
       name: "🎁 ラッキーアイテム",
-      value: `${luckyItem}\n`,
+      value: `${luckyItem}`,
       inline: false
     },
     {
       name: "📜 総括",
-      value: `${summaryByRank[rank]}`,
+      value: `\n${summaryByRank[rank]}`,
       inline: false
     }
   ],
