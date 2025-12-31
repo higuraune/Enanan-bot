@@ -289,7 +289,7 @@ if (
       inline: false
     },
     {
-      name: "📜 総括",
+      name: "📜 えななんからの一言",
       value: `${summaryByRank[rank]}`,
       inline: false
     }
