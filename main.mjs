@@ -277,7 +277,7 @@ if (
     },
     {
       name: "📜 総括",
-      value: `\n${summaryByRank[rank]}`,
+      value: `${summaryByRank[rank]}`,
       inline: false
     }
   ],
