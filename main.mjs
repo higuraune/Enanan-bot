@@ -112,7 +112,7 @@ function lotteryByWeight(channelId, arr, weight) {
 // ===== おみくじ用 共通関数 =====
 function drawStar() {
   const table = [
-    { star: 5, weight: 10 },
+    { star: 5, weight: 14 },
     { star: 4, weight: 8 },
     { star: 3, weight: 6 },
     { star: 2, weight: 4 },
@@ -258,7 +258,7 @@ if (
 
   // 表示
   const embed = {
-  title: `⛩️ 御神籤 － ${rank} －`,
+  title: `⛩️ えなみくじ － ${rank} －`,
   fields: [
     {
       name: "📊 運勢",
@@ -267,12 +267,12 @@ if (
         `恋愛　${stars(detail.恋愛)}\n` +
         `金運　${stars(detail.金運)}\n` +
         `仕事　${stars(detail.仕事)}\n` +
-        `健康　${stars(detail.健康)}`,
+        `健康　${stars(detail.健康)}\n`,
       inline: false
     },
     {
       name: "🎁 ラッキーアイテム",
-      value: `${luckyItem}`,
+      value: `${luckyItem}\n`,
       inline: false
     },
     {
