@@ -284,7 +284,7 @@ if (
     }
   ],
   footer: { text: `${displayName} の運勢` },
-  color: ccaa88
+  color: 0xccaa88
 };
 
   message.channel.send({ embeds: [embed] });
