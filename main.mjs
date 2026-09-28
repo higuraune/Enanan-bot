@@ -153,24 +153,13 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
   // --- 簡単な例 ---
-  if (message.content.match(/おはよ/)) {
-    sendReply(message, "おはよー♪");
-    return;
-  }
-
-  if (message.content.match(/こんにちは/)) {
-    sendReply(message, "あら、こんにちは♪");
-    return;
-  }
-
-  if (message.content.match(/こんばんは/)) {
-    sendReply(message, "あら、こんばんは♪");
-    return;
-  }
-
   if (message.content.match(/えななん/)) {
     await message.react("🎨");
-    sendReply(message, "パシャ(自撮り)");
+    return;
+  }
+
+  if (message.content.match(/お疲れ/|/おつかれ/)) {
+    await message.react("🍵");
     return;
   }
 
