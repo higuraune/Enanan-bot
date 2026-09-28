@@ -398,8 +398,12 @@ client.on("messageCreate", async (message) => {
   // ① チャンネル名を変更
   await message.channel.setName(code);
 
-  // ② 今のチャンネルに「部屋番号が変わったよ」と送信
-  await message.channel.send(`🔧 部屋番号が **${code}** に変わったよ！`);
+  // ② 今のチャンネルに埋め込みで「部屋番号が変わったよ」と送信
+  const embed = new EmbedBuilder()
+    .setColor("#00bfff") // 好きな色に変更できる
+    .setTitle("🔧 部屋番号が変更されました")
+    .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
+    .setFooter({ text: "変更が正常に完了しました" });
 
   // ③ 特定のチャンネルへ送信
   const targetChannelId = "962288448679608370"; // ここに送りたいチャンネルID
