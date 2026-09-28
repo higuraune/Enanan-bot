@@ -67,6 +67,9 @@ app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
 
+//  埋め込み対応
+const { EmbedBuilder } = require("discord.js");
+
 // メッセージ送信用関数（旧 sendMsg 相当）
 function sendMsg(channelId, text) {
   const channel = client.channels.cache.get(channelId);
