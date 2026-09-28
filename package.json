@@ -1,0 +1,25 @@
+{
+  "name": "enanan-bot",
+  "version": "1.0.0",
+  "description": "えななんbotが生まれ変わったよ♪",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/higuraune/Enanan-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/higuraune/Enanan-bot/issues"
+  },
+  "homepage": "https://github.com/higuraune/Enanan-bot#readme",
+  "dependencies": {
+    "discord.js": "^14.23.2",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
