@@ -404,6 +404,7 @@ client.on("messageCreate", async (message) => {
     .setTitle("🔧 部屋番号が変更されました")
     .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
     .setFooter({ text: "変更が正常に完了しました" });
+  await message.channel.send({ embeds: [embed] });
 
   // ③ 特定のチャンネルへ送信
   const targetChannelId = "962288448679608370"; // ここに送りたいチャンネルID
