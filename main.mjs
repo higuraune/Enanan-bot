@@ -176,11 +176,7 @@ client.on("messageCreate", async (message) => {
 
   if (message.content.match(/BND/)) {
     const text =
-<<<<<<< HEAD
       ";A Brand New Day 🌈❕駆け抜けた🏃‍♂️その先の先➡️ 瞬く✨未来😆はいつだって🤞遠くの空☀️☁️に描く🎨希望🙈💭💗で輝いて🌟いるんだ😉🍀";
-=======
-      "A Brand New Day 🌈❕駆け抜けた🏃‍♂️その先の先➡️ 瞬く✨未来😆はいつだって🤞遠くの空☀️☁️に描く🎨希望🙈💭💗で輝いて🌟いるんだ😉🍀";
->>>>>>> 2ea9b97531a8683cab11e9a7429a5edcd7676fd8
     sendMsg(message.channel.id, text);
     return;
   }
