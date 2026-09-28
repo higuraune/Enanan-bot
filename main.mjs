@@ -163,6 +163,7 @@ client.on("messageCreate", async (message) => {
     return;
   }
 
+    // --- ネタ構文 ---
   if (message.content.match(/BND/)) {
     const text =
       ";A Brand New Day 🌈❕駆け抜けた🏃‍♂️その先の先➡️ 瞬く✨未来😆はいつだって🤞遠くの空☀️☁️に描く🎨希望🙈💭💗で輝いて🌟いるんだ😉🍀";
@@ -376,13 +377,35 @@ if (
       inline: false
     }
   ],
-  footer: { text: `${displayName} さんに、\n佳き巡りの一年あらんことを。` },
+  footer: { text: `${displayName} さんに、\n今年もよい一年を♪` },
   color: 0xccaa88
 };
-
   message.channel.send({ embeds: [embed] });
   return;
 }
-
 });
 
+//  ===== 部屋番号変更機能 =====
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  // 5桁の数字のみ
+  const match = message.content.match(/^\d{5}$/);
+  if (!match) return;
+
+  const code = match[0]; // 送られた5桁の数字
+
+  // ① チャンネル名を変更
+  await message.channel.setName(code);
+
+  // ② 今のチャンネルに「部屋番号が変わったよ」と送信
+  await message.channel.send(`🔧 部屋番号が **${code}** に変わったよ！`);
+
+  // ③ 特定のチャンネルへ送信
+  const targetChannelId = "962288448679608370"; // ここに送りたいチャンネルID
+  const targetChannel = await client.channels.fetch(targetChannelId);
+
+  if (targetChannel) {
+    await targetChannel.send(`📨 新しい部屋番号: **${code}**`);
+  }
+});
