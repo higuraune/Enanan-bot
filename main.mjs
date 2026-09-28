@@ -393,24 +393,26 @@ client.on("messageCreate", async (message) => {
   const match = message.content.match(/^\d{5}$/);
   if (!match) return;
 
-  const code = match[0]; // 送られた5桁の数字
+  const code = match[0];
 
-  // ① チャンネル名を変更
-  await message.channel.setName(code);
-
-  // ② 今のチャンネルに埋め込みで「部屋番号が変わったよ」と送信
+  // ① 埋め込みで通知（送信したチャンネル）
   const embed = new EmbedBuilder()
-    .setColor("#00bfff") // 好きな色に変更できる
+    .setColor(0x00bfff)
     .setTitle("🔧 部屋番号が変更されました")
     .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
     .setFooter({ text: "変更が正常に完了しました" });
+
   await message.channel.send({ embeds: [embed] });
 
-  // ③ 特定のチャンネルへ送信
+  // ② 別チャンネルへ通知 & 名前変更
   const targetChannelId = "962288448679608370"; // ここに送りたいチャンネルID
   const targetChannel = await client.channels.fetch(targetChannelId);
 
   if (targetChannel) {
+    // 名前変更
+    await targetChannel.setName(code);
+
+    // 通知
     await targetChannel.send(`📨 新しい部屋番号: **${code}**`);
   }
 });
