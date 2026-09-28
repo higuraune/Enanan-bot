@@ -158,7 +158,7 @@ client.on("messageCreate", async (message) => {
     return;
   }
 
-  if (message.content.match(/お疲れ/|/おつかれ/)) {
+  if (message.content.match(/お疲れ|おつかれ/)) {
     await message.react("🍵");
     return;
   }
