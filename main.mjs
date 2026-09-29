@@ -71,6 +71,16 @@ app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
 
+// 次鯖の回答記録
+let nextServerVotes = {
+  yes: [],
+  no: [],
+  keep: []
+};
+
+// 次鯖通知メッセージを保存
+let nextServerMessage = null;
+
 // メッセージ送信用関数（旧 sendMsg 相当）
 function sendMsg(channelId, text) {
   const channel = client.channels.cache.get(channelId);
@@ -415,89 +425,107 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-// ===== 毎秒チェックして、43分になったら通知 =====
-client.once("ready", () => {
+// ★ 毎時間 53分くらいに通知
+if (minute === 23 && second <= 10) {
+  try {
+    const channel = await client.channels.fetch(nextServerChannelId);
 
- // Botがすでに起動済みなら何もしない
- if (global.botStarted) return;
- global.botStarted = true;
+    // ★ 前回の記録をリセット
+    nextServerVotes = { yes: [], no: [], keep: [] };
 
- // Botが起動完了したときの処理
- console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
- console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
- console.log("⏱ 次鯖確認の時刻指定通知を開始します");
+    // ボタン作成
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId("next_yes")
+        .setLabel("次鯖あり")
+        .setStyle(ButtonStyle.Success),
+      new ButtonBuilder()
+        .setCustomId("next_no")
+        .setLabel("次鯖なし")
+        .setStyle(ButtonStyle.Danger),
+      new ButtonBuilder()
+        .setCustomId("next_keep")
+        .setLabel("継続")
+        .setStyle(ButtonStyle.Primary)
+    );
 
-  setInterval(async () => {
-    if (!nextServerEnabled) return; // ← OFFなら何もしない
+    // 埋め込み生成
+    const embed = buildNextServerEmbed();
 
-    const now = new Date();
-    const minute = now.getMinutes();
-    const second = now.getSeconds();
+    // メッセージ送信 & 保存
+    nextServerMessage = await channel.send({
+      embeds: [embed],
+      components: [row]
+    });
 
-    // ★ 毎時間 43分くらいに通知
-    if (minute === 53 && second <= 10) {
-      try {
-        const channel = await client.channels.fetch(nextServerChannelId);
+  } catch (err) {
+    console.log("次鯖通知エラー:", err);
+  }
+}
 
-        // ボタン作成
-        const row = new ActionRowBuilder().addComponents(
-          new ButtonBuilder()
-            .setCustomId("next_yes")
-            .setLabel("次鯖あり")
-            .setStyle(ButtonStyle.Success),
-
-          new ButtonBuilder()
-            .setCustomId("next_no")
-            .setLabel("次鯖なし")
-            .setStyle(ButtonStyle.Danger),
-
-          new ButtonBuilder()
-            .setCustomId("next_keep")
-            .setLabel("継続")
-            .setStyle(ButtonStyle.Primary)
-        );
-
-        // 埋め込み
-        const embed = new EmbedBuilder()
-          .setColor(0x00bfff)
-          .setTitle("⏰ 次鯖確認の時間です")
-          .setDescription("次鯖の予定を選んでください！")
-          .setTimestamp();
-
-        await channel.send({ embeds: [embed], components: [row] });
-
-      } catch (err) {
-        console.log("次鯖通知エラー:", err);
-      }
-    }
-  }, 1000); // 毎秒チェック
-});
 
 // ===== ボタンが押された時の処理 =====
-client.on("interactionCreate", async (interaction) => {
+cclient.on("interactionCreate", async (interaction) => {
   if (!interaction.isButton()) return;
 
   const userName = interaction.member?.displayName || interaction.user.username;
 
-  let resultText = "";
-
+  // どのボタンか判定して名前を追加
   if (interaction.customId === "next_yes") {
-    resultText = `🟢 **${userName} さんが「次鯖あり」を選択しました！**`;
+    if (!nextServerVotes.yes.includes(userName)) {
+      nextServerVotes.yes.push(userName);
+    }
   }
 
   if (interaction.customId === "next_no") {
-    resultText = `🔴 **${userName} さんが「次鯖なし」を選択しました！**`;
+    if (!nextServerVotes.no.includes(userName)) {
+      nextServerVotes.no.push(userName);
+    }
   }
 
   if (interaction.customId === "next_keep") {
-    resultText = `🔵 **${userName} さんが「継続」を選択しました！**`;
+    if (!nextServerVotes.keep.includes(userName)) {
+      nextServerVotes.keep.push(userName);
+    }
   }
 
-  await interaction.reply({
-    content: resultText,
-    ephemeral: false
-  });
+  // 返信は不要 → deferUpdate() でボタンだけ反応させる
+  await interaction.deferUpdate();
+
+  // 埋め込み更新
+  if (nextServerMessage) {
+    const updatedEmbed = buildNextServerEmbed();
+    await nextServerMessage.edit({ embeds: [updatedEmbed] });
+  }
 });
+
+function buildNextServerEmbed() {
+  return new EmbedBuilder()
+    .setColor(0x00bfff)
+    .setTitle("⏰ 次鯖確認の時間です")
+    .setDescription("次鯖の予定を選んでください！")
+    .addFields(
+      {
+        name: "🟢 次鯖あり",
+        value: nextServerVotes.yes.length > 0
+          ? nextServerVotes.yes.join("\n")
+          : "（まだ誰も押していません）"
+      },
+      {
+        name: "🔴 次鯖なし",
+        value: nextServerVotes.no.length > 0
+          ? nextServerVotes.no.join("\n")
+          : "（まだ誰も押していません）"
+      },
+      {
+        name: "🔵 継続",
+        value: nextServerVotes.keep.length > 0
+          ? nextServerVotes.keep.join("\n")
+          : "（まだ誰も押していません）"
+      }
+    )
+    .setTimestamp();
+}
 
 // ===== 部屋番号変更通知 =====
 client.on("messageCreate", async (message) => {
