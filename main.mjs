@@ -425,43 +425,62 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-// ★ 毎時間 53分くらいに通知
-if (minute === 23 && second <= 10) {
-  try {
-    const channel = await client.channels.fetch(nextServerChannelId);
+client.once("ready", () => {
 
-    // ★ 前回の記録をリセット
-    nextServerVotes = { yes: [], no: [], keep: [] };
+  if (global.botStarted) return;
+  global.botStarted = true;
 
-    // ボタン作成
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId("next_yes")
-        .setLabel("次鯖あり")
-        .setStyle(ButtonStyle.Success),
-      new ButtonBuilder()
-        .setCustomId("next_no")
-        .setLabel("次鯖なし")
-        .setStyle(ButtonStyle.Danger),
-      new ButtonBuilder()
-        .setCustomId("next_keep")
-        .setLabel("継続")
-        .setStyle(ButtonStyle.Primary)
-    );
+  console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
+  console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
+  console.log("⏱ 次鯖確認の時刻指定通知を開始します");
 
-    // 埋め込み生成
-    const embed = buildNextServerEmbed();
+  setInterval(async () => {
+    if (!nextServerEnabled) return;
 
-    // メッセージ送信 & 保存
-    nextServerMessage = await channel.send({
-      embeds: [embed],
-      components: [row]
-    });
+    const now = new Date();
+    const minute = now.getMinutes();
+    const second = now.getSeconds();
 
-  } catch (err) {
-    console.log("次鯖通知エラー:", err);
-  }
-}
+    // ★ 毎時間 53分くらいに通知
+    if (minute === 28 && second <= 3) {
+      try {
+        const channel = await client.channels.fetch(nextServerChannelId);
+
+        // ★ 前回の記録をリセット
+        nextServerVotes = { yes: [], no: [], keep: [] };
+
+        // ボタン作成
+        const row = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId("next_yes")
+            .setLabel("次鯖あり")
+            .setStyle(ButtonStyle.Success),
+          new ButtonBuilder()
+            .setCustomId("next_no")
+            .setLabel("次鯖なし")
+            .setStyle(ButtonStyle.Danger),
+          new ButtonBuilder()
+            .setCustomId("next_keep")
+            .setLabel("継続")
+            .setStyle(ButtonStyle.Primary)
+        );
+
+        // 埋め込み生成
+        const embed = buildNextServerEmbed();
+
+        // メッセージ送信 & 保存
+        nextServerMessage = await channel.send({
+          embeds: [embed],
+          components: [row]
+        });
+
+      } catch (err) {
+        console.log("次鯖通知エラー:", err);
+      }
+    }
+  }, 1000);
+});
+
 
 
 // ===== ボタンが押された時の処理 =====
