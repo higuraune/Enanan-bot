@@ -400,33 +400,25 @@ if (
 });
 
 // 次鯖確認機能
-function buildNextServerEmbed() {
-  return new EmbedBuilder()
-    .setColor(0x00bfff)
-    .setTitle("⏰ 次鯖確認の時間です")
-    .setDescription("次鯖の予定を選んでください！")
-    .addFields(
-      {
-        name: "🟢 次鯖あり",
-        value: nextServerVotes.yes.length > 0
-          ? nextServerVotes.yes.join("\n")
-          : "（まだ誰も押していません）"
-      },
-      {
-        name: "🔴 次鯖なし",
-        value: nextServerVotes.no.length > 0
-          ? nextServerVotes.no.join("\n")
-          : "（まだ誰も押していません）"
-      },
-      {
-        name: "🔵 継続",
-        value: nextServerVotes.keep.length > 0
-          ? nextServerVotes.keep.join("\n")
-          : "（まだ誰も押していません）"
-      }
-    )
-    .setTimestamp();
-}
+// ボタン作成
+const row = new ActionRowBuilder().addComponents(
+  new ButtonBuilder()
+    .setCustomId("next_yes")
+    .setLabel("次鯖あり")
+    .setStyle(ButtonStyle.Danger),
+
+  new ButtonBuilder()
+    .setCustomId("next_no")
+    .setLabel("次鯖なし")
+    .setStyle(ButtonStyle.Success),
+
+  new ButtonBuilder()
+    .setCustomId("next_keep")
+    .setLabel("継続")
+    .setStyle(ButtonStyle.Primary)
+);
+
+
 
 // 次鯖通知を送るチャンネルID
 const nextServerChannelId = "960074010920620085";
@@ -468,7 +460,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 31分くらいに通知
-    if (minute === 46 && second <= 3) {
+    if (minute === 0 && second <= 3) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
@@ -507,38 +499,40 @@ client.once("ready", () => {
   }, 1000);
 });
 
+// ===== ボタン押下時の処理 =====
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isButton()) return;
 
   const userName = interaction.member?.displayName || interaction.user.username;
 
+  // ★ まず全ての項目から名前を削除（押し直し対応）
+  nextServerVotes.yes = nextServerVotes.yes.filter(n => n !== userName);
+  nextServerVotes.no = nextServerVotes.no.filter(n => n !== userName);
+  nextServerVotes.keep = nextServerVotes.keep.filter(n => n !== userName);
+
+  // ★ 押したボタンの項目に追加
   if (interaction.customId === "next_yes") {
-    if (!nextServerVotes.yes.includes(userName)) {
-      nextServerVotes.yes.push(userName);
-    }
+    nextServerVotes.yes.push(userName);
   }
 
   if (interaction.customId === "next_no") {
-    if (!nextServerVotes.no.includes(userName)) {
-      nextServerVotes.no.push(userName);
-    }
+    nextServerVotes.no.push(userName);
   }
 
   if (interaction.customId === "next_keep") {
-    if (!nextServerVotes.keep.includes(userName)) {
-      nextServerVotes.keep.push(userName);
-    }
+    nextServerVotes.keep.push(userName);
   }
 
-  // 返信なし
+  // ★ 返信なし
   await interaction.deferUpdate();
 
-  // 埋め込み更新
+  // ★ 埋め込み更新
   if (nextServerMessage) {
     const updatedEmbed = buildNextServerEmbed();
     await nextServerMessage.edit({ embeds: [updatedEmbed] });
   }
 });
+
 
 
 // ===== 部屋番号変更通知 =====
