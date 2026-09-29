@@ -443,13 +443,6 @@ client.on("messageCreate", async (message) => {
 });
 
 // 次鯖確認機能
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder
-} from "discord.js";
-
 // 次鯖通知を送るチャンネルID
 const nextServerChannelId = "960074010920620085"; // ← ここに通知したいチャンネルのIDを指定してください
 
@@ -487,7 +480,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 43分ちょうどに通知
-    if (minute === 48 && second === 0) {
+    if (minute === 53 && second === 0) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
