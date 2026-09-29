@@ -417,7 +417,12 @@ client.on("messageCreate", async (message) => {
 
 // ===== 毎秒チェックして、43分になったら通知 =====
 client.once("ready", () => {
-// Botが起動完了したときの処理
+
+ // Botがすでに起動済みなら何もしない
+ if (global.botStarted) return;
+ global.botStarted = true;
+
+ // Botが起動完了したときの処理
  console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
  console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
  console.log("⏱ 次鯖確認の時刻指定通知を開始します");
@@ -430,7 +435,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 43分くらいに通知
-    if (minute === 47 && second <= 10) {
+    if (minute === 53 && second <= 10) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
