@@ -401,17 +401,23 @@ client.on("messageCreate", async (message) => {
   const embed = new EmbedBuilder()
     .setColor(0x00bfff)
     .setTitle("🔧 部屋番号が変更されました")
-    .setDescription(`**${code}** に変わったよ！`)
+    .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
     .setTimestamp();
 
   await message.channel.send({ embeds: [embed] });
 
-  // ② 別チャンネルへ通知 & 名前変更
+  // ② 別チャンネルへ通知 & 名前変更（安全に try/catch）
   const targetChannelId = "962288448679608370"; // ここに送りたいチャンネルID
-  const targetChannel = await client.channels.fetch(targetChannelId);
 
-  if (targetChannel) {
+  try {
+    const targetChannel = await client.channels.fetch(targetChannelId);
+
+    // 名前変更
     await targetChannel.setName(code);
+
+    // 通知
     await targetChannel.send(`📨 新しい部屋番号: **${code}**`);
+  } catch (err) {
+    console.log("別チャンネル処理でエラー:", err);
   }
 });
