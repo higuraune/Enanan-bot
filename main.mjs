@@ -480,7 +480,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 43分ちょうどに通知
-    if (minute === 53 && second === 0) {
+    if (minute === 08 && second === 0) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
