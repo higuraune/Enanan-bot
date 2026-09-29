@@ -385,7 +385,8 @@ if (
 }
 });
 
-//  ===== 部屋番号変更機能 =====
+import { EmbedBuilder } from "discord.js";
+
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
@@ -395,17 +396,32 @@ client.on("messageCreate", async (message) => {
 
   const code = match[0];
 
-  // ① 今のチャンネルに通知
-  await message.channel.send(`# 🔧 部屋番号が **${code}** に変わったよ！`);
+  // ① 色付き巨大埋め込み
+  const embed = new EmbedBuilder()
+    .setColor(0x00bfff) // ← 好きな色に変更できる（今は水色）
+    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`) // ←巨大表示
+    .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
+    .setTimestamp();
 
-  // ② 別チャンネルへ通知 & 名前変更
-  const targetChannelId = "962288448679608370"; // チャンネルID
+  await message.channel.send({ embeds: [embed] });
+
+  // ② 別チャンネルへ書き込み & チャンネル名変更
+  const targetChannelId = "962288448679608370";
+
   try {
     const targetChannel = await client.channels.fetch(targetChannelId);
-    // 名前変更
-    await targetChannel.setName(code);
-    // 通知
-    await targetChannel.send(`# 📨 新しい部屋番号: **${code}**`);
+
+    // チャンネル名変更
+    await targetChannel.setName(`部屋番号【${code}】`);
+
+    // 別チャンネルにも色付き巨大埋め込み
+    const embed2 = new EmbedBuilder()
+      .setColor(0xff6699) // ←別チャンネルはピンクにしてみた
+      .setTitle(`📨 新しい部屋番号: ${code}`)
+      .setTimestamp();
+
+    await targetChannel.send({ embeds: [embed2] });
+
   } catch (err) {
     console.log("別チャンネル処理でエラー:", err);
   }
