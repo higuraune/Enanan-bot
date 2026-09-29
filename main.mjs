@@ -442,3 +442,89 @@ client.on("messageCreate", async (message) => {
     console.log("別チャンネル処理でエラー:", err);
   }
 });
+
+// 次鯖通知機能
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder
+} from "discord.js";
+
+// 次鯖通知を送るチャンネル
+const nextServerChannelId = "960074010920620085"; // ← ここに通知したいチャンネルのIDを指定する
+
+// ===== 毎分チェックして、43分になったら通知 =====
+client.once("ready", () => {
+  console.log("⏱ 次鯖確認の時刻指定通知を開始します");
+
+  setInterval(async () => {
+    const now = new Date();
+
+    const minute = now.getMinutes();   // 現在の「分」
+    const second = now.getSeconds();   // 現在の「秒」
+
+    // ★ 43分ちょうどに通知（秒まで一致させる）
+    if (minute === 43 && second === 0) {
+      try {
+        const channel = await client.channels.fetch(nextServerChannelId);
+
+        // ボタン作成
+        const row = new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
+            .setCustomId("next_yes")
+            .setLabel("次鯖あり")
+            .setStyle(ButtonStyle.Success),
+
+          new ButtonBuilder()
+            .setCustomId("next_no")
+            .setLabel("次鯖なし")
+            .setStyle(ButtonStyle.Danger),
+
+          new ButtonBuilder()
+            .setCustomId("next_keep")
+            .setLabel("継続")
+            .setStyle(ButtonStyle.Primary)
+        );
+
+        // 埋め込み
+        const embed = new EmbedBuilder()
+          .setColor(0x00bfff)
+          .setTitle("⏰ 次鯖確認の時間です")
+          .setDescription("次鯖の予定を選んでください！")
+          .setTimestamp();
+
+        await channel.send({ embeds: [embed], components: [row] });
+
+      } catch (err) {
+        console.log("次鯖通知エラー:", err);
+      }
+    }
+  }, 1000); // ← 毎秒チェック（最も正確）
+});
+
+// ===== ボタンが押された時の処理 =====
+client.on("interactionCreate", async (interaction) => {
+  if (!interaction.isButton()) return;
+
+  const userName = interaction.member?.displayName || interaction.user.username;
+
+  let resultText = "";
+
+  if (interaction.customId === "next_yes") {
+    resultText = `🟢 **${userName} さんが「次鯖あり」を選択しました！**`;
+  }
+
+  if (interaction.customId === "next_no") {
+    resultText = `🔴 **${userName} さんが「次鯖なし」を選択しました！**`;
+  }
+
+  if (interaction.customId === "next_keep") {
+    resultText = `🔵 **${userName} さんが「継続」を選択しました！**`;
+  }
+
+  await interaction.reply({
+    content: resultText,
+    ephemeral: false
+  });
+});
