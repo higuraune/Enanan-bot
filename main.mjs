@@ -71,16 +71,6 @@ app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
 
-// 次鯖の回答記録
-let nextServerVotes = {
-  yes: [],
-  no: [],
-  keep: []
-};
-
-// 次鯖通知メッセージを保存
-let nextServerMessage = null;
-
 // メッセージ送信用関数（旧 sendMsg 相当）
 function sendMsg(channelId, text) {
   const channel = client.channels.cache.get(channelId);
@@ -425,29 +415,29 @@ client.on("messageCreate", async (message) => {
   }
 });
 
+// ===== 毎秒チェックして、43分になったら通知 =====
 client.once("ready", () => {
 
-  if (global.botStarted) return;
-  global.botStarted = true;
+ // Botがすでに起動済みなら何もしない
+ if (global.botStarted) return;
+ global.botStarted = true;
 
-  console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
-  console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
-  console.log("⏱ 次鯖確認の時刻指定通知を開始します");
+ // Botが起動完了したときの処理
+ console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
+ console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
+ console.log("⏱ 次鯖確認の時刻指定通知を開始します");
 
   setInterval(async () => {
-    if (!nextServerEnabled) return;
+    if (!nextServerEnabled) return; // ← OFFなら何もしない
 
     const now = new Date();
     const minute = now.getMinutes();
     const second = now.getSeconds();
 
-    // ★ 毎時間 53分くらいに通知
-    if (minute === 28 && second <= 3) {
+    // ★ 毎時間 43分くらいに通知
+    if (minute === 31 && second <= 10) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
-
-        // ★ 前回の記録をリセット
-        nextServerVotes = { yes: [], no: [], keep: [] };
 
         // ボタン作成
         const row = new ActionRowBuilder().addComponents(
@@ -455,96 +445,59 @@ client.once("ready", () => {
             .setCustomId("next_yes")
             .setLabel("次鯖あり")
             .setStyle(ButtonStyle.Success),
+
           new ButtonBuilder()
             .setCustomId("next_no")
             .setLabel("次鯖なし")
             .setStyle(ButtonStyle.Danger),
+
           new ButtonBuilder()
             .setCustomId("next_keep")
             .setLabel("継続")
             .setStyle(ButtonStyle.Primary)
         );
 
-        // 埋め込み生成
-        const embed = buildNextServerEmbed();
+        // 埋め込み
+        const embed = new EmbedBuilder()
+          .setColor(0x00bfff)
+          .setTitle("⏰ 次鯖確認の時間です")
+          .setDescription("次鯖の予定を選んでください！")
+          .setTimestamp();
 
-        // メッセージ送信 & 保存
-        nextServerMessage = await channel.send({
-          embeds: [embed],
-          components: [row]
-        });
+        await channel.send({ embeds: [embed], components: [row] });
 
       } catch (err) {
         console.log("次鯖通知エラー:", err);
       }
     }
-  }, 1000);
+  }, 1000); // 毎秒チェック
 });
 
-
-
 // ===== ボタンが押された時の処理 =====
-cclient.on("interactionCreate", async (interaction) => {
+client.on("interactionCreate", async (interaction) => {
   if (!interaction.isButton()) return;
 
   const userName = interaction.member?.displayName || interaction.user.username;
 
-  // どのボタンか判定して名前を追加
+  let resultText = "";
+
   if (interaction.customId === "next_yes") {
-    if (!nextServerVotes.yes.includes(userName)) {
-      nextServerVotes.yes.push(userName);
-    }
+    resultText = `🟢 **${userName} さんが「次鯖あり」を選択しました！**`;
   }
 
   if (interaction.customId === "next_no") {
-    if (!nextServerVotes.no.includes(userName)) {
-      nextServerVotes.no.push(userName);
-    }
+    resultText = `🔴 **${userName} さんが「次鯖なし」を選択しました！**`;
   }
 
   if (interaction.customId === "next_keep") {
-    if (!nextServerVotes.keep.includes(userName)) {
-      nextServerVotes.keep.push(userName);
-    }
+    resultText = `🔵 **${userName} さんが「継続」を選択しました！**`;
   }
 
-  // 返信は不要 → deferUpdate() でボタンだけ反応させる
-  await interaction.deferUpdate();
-
-  // 埋め込み更新
-  if (nextServerMessage) {
-    const updatedEmbed = buildNextServerEmbed();
-    await nextServerMessage.edit({ embeds: [updatedEmbed] });
-  }
+  await interaction.reply({
+    content: resultText,
+    ephemeral: false
+  });
 });
-
-function buildNextServerEmbed() {
-  return new EmbedBuilder()
-    .setColor(0x00bfff)
-    .setTitle("⏰ 次鯖確認の時間です")
-    .setDescription("次鯖の予定を選んでください！")
-    .addFields(
-      {
-        name: "🟢 次鯖あり",
-        value: nextServerVotes.yes.length > 0
-          ? nextServerVotes.yes.join("\n")
-          : "（まだ誰も押していません）"
-      },
-      {
-        name: "🔴 次鯖なし",
-        value: nextServerVotes.no.length > 0
-          ? nextServerVotes.no.join("\n")
-          : "（まだ誰も押していません）"
-      },
-      {
-        name: "🔵 継続",
-        value: nextServerVotes.keep.length > 0
-          ? nextServerVotes.keep.join("\n")
-          : "（まだ誰も押していません）"
-      }
-    )
-    .setTimestamp();
-}
 
 // ===== 部屋番号変更通知 =====
 client.on("messageCreate", async (message) => {
