@@ -67,9 +67,6 @@ app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
 
-//  埋め込み対応
-const { EmbedBuilder } = require("discord.js");
-
 // メッセージ送信用関数（旧 sendMsg 相当）
 function sendMsg(channelId, text) {
   const channel = client.channels.cache.get(channelId);
@@ -389,6 +386,8 @@ if (
 });
 
 //  ===== 部屋番号変更機能 =====
+const { EmbedBuilder } = require("discord.js");
+
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
@@ -402,8 +401,8 @@ client.on("messageCreate", async (message) => {
   const embed = new EmbedBuilder()
     .setColor(0x00bfff)
     .setTitle("🔧 部屋番号が変更されました")
-    .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
-    .setFooter({ text: "変更が正常に完了しました" });
+    .setDescription(`**${code}** に変わったよ！`)
+    .setTimestamp();
 
   await message.channel.send({ embeds: [embed] });
 
@@ -412,10 +411,7 @@ client.on("messageCreate", async (message) => {
   const targetChannel = await client.channels.fetch(targetChannelId);
 
   if (targetChannel) {
-    // 名前変更
     await targetChannel.setName(code);
-
-    // 通知
     await targetChannel.send(`📨 新しい部屋番号: **${code}**`);
   }
 });
