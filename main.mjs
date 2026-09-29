@@ -407,12 +407,11 @@ client.on("messageCreate", async (message) => {
   // ① 色付き埋め込み（アイコン＋名前入り）
   const embed = new EmbedBuilder()
     .setColor(0xccaa88)
+    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`)
     .setAuthor({
       name: `${userName} さんが更新しました`,
       iconURL: iconURL
     })
-    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`)
-    .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
     .setTimestamp();
 
   await message.channel.send({ embeds: [embed] });
@@ -429,11 +428,11 @@ client.on("messageCreate", async (message) => {
     // 別チャンネルにも色付き巨大埋め込み（アイコン＋名前入り）
     const embed2 = new EmbedBuilder()
       .setColor(0xffaacc)
+      .setTitle(`📨 新しい部屋番号: ${code}`)
       .setAuthor({
         name: `${userName} さんが更新しました`,
         iconURL: iconURL
       })
-      .setTitle(`📨 新しい部屋番号: ${code}`)
       .setTimestamp();
 
     await targetChannel.send({ embeds: [embed2] });
@@ -443,7 +442,7 @@ client.on("messageCreate", async (message) => {
   }
 });
 
-// 次鯖通知機能
+// 次鯖確認機能
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -451,21 +450,44 @@ import {
   EmbedBuilder
 } from "discord.js";
 
-// 次鯖通知を送るチャンネル
-const nextServerChannelId = "960074010920620085"; // ← ここに通知したいチャンネルのIDを指定する
+// 次鯖通知を送るチャンネルID
+const nextServerChannelId = "960074010920620085"; // ← ここに通知したいチャンネルのIDを指定してください
 
-// ===== 毎分チェックして、43分になったら通知 =====
+// 次鯖通知の ON/OFF 状態
+let nextServerEnabled = false;
+
+// ===== メッセージで ON/OFF を切り替え =====
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  // ON
+  if (message.content === "!次鯖") {
+    nextServerEnabled = true;
+    message.channel.send("⏱ 次鯖通知を **開始**しました");
+    return;
+  }
+
+  // OFF
+  if (message.content === "!次鯖e") {
+    nextServerEnabled = false;
+    message.channel.send("⏱ 次鯖通知を **停止**しました");
+    return;
+  }
+});
+
+// ===== 毎秒チェックして、43分になったら通知 =====
 client.once("ready", () => {
   console.log("⏱ 次鯖確認の時刻指定通知を開始します");
 
   setInterval(async () => {
+    if (!nextServerEnabled) return; // ← OFFなら何もしない
+
     const now = new Date();
+    const minute = now.getMinutes();
+    const second = now.getSeconds();
 
-    const minute = now.getMinutes();   // 現在の「分」
-    const second = now.getSeconds();   // 現在の「秒」
-
-    // ★ 43分ちょうどに通知（秒まで一致させる）
-    if (minute === 43 && second === 0) {
+    // ★ 毎時間 43分ちょうどに通知
+    if (minute === 48 && second === 0) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
@@ -500,7 +522,7 @@ client.once("ready", () => {
         console.log("次鯖通知エラー:", err);
       }
     }
-  }, 1000); // ← 毎秒チェック（最も正確）
+  }, 1000); // 毎秒チェック
 });
 
 // ===== ボタンが押された時の処理 =====
