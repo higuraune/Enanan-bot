@@ -1,9 +1,18 @@
 // main.mjs - Discord Botのメインプログラム
 
 // 必要なライブラリを読み込み
-import { Client, GatewayIntentBits, AttachmentBuilder } from 'discord.js';
-import dotenv from 'dotenv';
-import express from 'express';
+import {
+  Client,
+  GatewayIntentBits,
+  AttachmentBuilder,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
+} from "discord.js";
+import dotenv from "dotenv";
+import express from "express";
+
 
 // .envファイルから環境変数を読み込み
 dotenv.config();
@@ -380,9 +389,6 @@ if (
 }
 });
 
-// 埋め込み対応
-import { EmbedBuilder } from "discord.js";
-
 // 次鯖確認機能
 // 次鯖通知を送るチャンネルID
 const nextServerChannelId = "960074010920620085"; // ← ここに通知したいチャンネルのIDを指定してください
@@ -424,7 +430,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 43分くらいに通知
-    if (minute === 40 && second <= 10) {
+    if (minute === 47 && second <= 10) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
