@@ -400,24 +400,35 @@ if (
 });
 
 // 次鯖確認機能
-// ボタン作成
-const row = new ActionRowBuilder().addComponents(
-  new ButtonBuilder()
-    .setCustomId("next_yes")
-    .setLabel("次鯖あり")
-    .setStyle(ButtonStyle.Danger),
-
-  new ButtonBuilder()
-    .setCustomId("next_no")
-    .setLabel("次鯖なし")
-    .setStyle(ButtonStyle.Success),
-
-  new ButtonBuilder()
-    .setCustomId("next_keep")
-    .setLabel("継続")
-    .setStyle(ButtonStyle.Primary)
-);
-
+function buildNextServerEmbed() {
+  return new EmbedBuilder()
+    .setColor(0x00bfff)
+    .setTitle("⏰ 次鯖確認の時間です📝")
+    .setDescription("お手すきの際にボタンを押してください")
+    .addFields(
+      {
+        name: "🔴 次鯖あり",
+        value: nextServerVotes.yes.join("\n") || " ",
+      },
+      {
+        name: "\u200B", // 空行
+        value: "\u200B"
+      },
+      {
+        name: "🟢 次鯖なし",
+        value: nextServerVotes.no.join("\n") || " ",
+      },
+      {
+        name: "\u200B", // 空行
+        value: "\u200B"
+      },
+      {
+        name: "🔵 継続",
+        value: nextServerVotes.keep.join("\n") || " ",
+      }
+    )
+    .setTimestamp();
+}
 
 
 // 次鯖通知を送るチャンネルID
@@ -460,7 +471,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 31分くらいに通知
-    if (minute === 4 && second <= 3) {
+    if (minute === 10 && second <= 3) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
@@ -472,11 +483,11 @@ client.once("ready", () => {
           new ButtonBuilder()
             .setCustomId("next_yes")
             .setLabel("次鯖あり")
-            .setStyle(ButtonStyle.Success),
+            .setStyle(ButtonStyle.Danger),
           new ButtonBuilder()
             .setCustomId("next_no")
             .setLabel("次鯖なし")
-            .setStyle(ButtonStyle.Danger),
+            .setStyle(ButtonStyle.Success),
           new ButtonBuilder()
             .setCustomId("next_keep")
             .setLabel("継続")
