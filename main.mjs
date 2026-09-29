@@ -388,60 +388,6 @@ if (
 // 埋め込み対応
 import { EmbedBuilder } from "discord.js";
 
-// ===== 部屋番号変更通知 =====
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
-
-  // 5桁の数字のみ
-  const match = message.content.match(/^\d{5}$/);
-  if (!match) return;
-
-  const code = match[0];
-
-  // 更新した人の名前（ニックネーム優先）
-  const userName = message.member?.displayName || message.author.username;
-
-  // 更新者のアイコンURL
-  const iconURL = message.author.displayAvatarURL();
-
-  // ① 色付き埋め込み（アイコン＋名前入り）
-  const embed = new EmbedBuilder()
-    .setColor(0xccaa88)
-    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`)
-    .setAuthor({
-      name: `${userName} さんが更新しました`,
-      iconURL: iconURL
-    })
-    .setTimestamp();
-
-  await message.channel.send({ embeds: [embed] });
-
-  // ② 別チャンネルへ書き込み & チャンネル名変更
-  const targetChannelId = "962288448679608370"; // ← ここに別チャンネルのIDを指定する
-
-  try {
-    const targetChannel = await client.channels.fetch(targetChannelId);
-
-    // チャンネル名変更
-    await targetChannel.setName(`部屋番号【${code}】`);
-
-    // 別チャンネルにも色付き巨大埋め込み（アイコン＋名前入り）
-    const embed2 = new EmbedBuilder()
-      .setColor(0xffaacc)
-      .setTitle(`📨 新しい部屋番号: ${code}`)
-      .setAuthor({
-        name: `${userName} さんが更新しました`,
-        iconURL: iconURL
-      })
-      .setTimestamp();
-
-    await targetChannel.send({ embeds: [embed2] });
-
-  } catch (err) {
-    console.log("別チャンネル処理でエラー:", err);
-  }
-});
-
 // 次鯖確認機能
 // 次鯖通知を送るチャンネルID
 const nextServerChannelId = "960074010920620085"; // ← ここに通知したいチャンネルのIDを指定してください
@@ -480,7 +426,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 43分ちょうどに通知
-    if (minute === 13 && second === 0) {
+    if (minute === 25 && second === 0) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
@@ -542,4 +488,58 @@ client.on("interactionCreate", async (interaction) => {
     content: resultText,
     ephemeral: false
   });
+});
+
+// ===== 部屋番号変更通知 =====
+client.on("messageCreate", async (message) => {
+  if (message.author.bot) return;
+
+  // 5桁の数字のみ
+  const match = message.content.match(/^\d{5}$/);
+  if (!match) return;
+
+  const code = match[0];
+
+  // 更新した人の名前（ニックネーム優先）
+  const userName = message.member?.displayName || message.author.username;
+
+  // 更新者のアイコンURL
+  const iconURL = message.author.displayAvatarURL();
+
+  // ① 色付き埋め込み（アイコン＋名前入り）
+  const embed = new EmbedBuilder()
+    .setColor(0xccaa88)
+    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`)
+    .setAuthor({
+      name: `${userName} さんが更新しました`,
+      iconURL: iconURL
+    })
+    .setTimestamp();
+
+  await message.channel.send({ embeds: [embed] });
+
+  // ② 別チャンネルへ書き込み & チャンネル名変更
+  const targetChannelId = "962288448679608370"; // ← ここに別チャンネルのIDを指定する
+
+  try {
+    const targetChannel = await client.channels.fetch(targetChannelId);
+
+    // チャンネル名変更
+    await targetChannel.setName(`部屋番号【${code}】`);
+
+    // 別チャンネルにも色付き巨大埋め込み（アイコン＋名前入り）
+    const embed2 = new EmbedBuilder()
+      .setColor(0xffaacc)
+      .setTitle(`📨 新しい部屋番号: ${code}`)
+      .setAuthor({
+        name: `${userName} さんが更新しました`,
+        iconURL: iconURL
+      })
+      .setTimestamp();
+
+    await targetChannel.send({ embeds: [embed2] });
+
+  } catch (err) {
+    console.log("別チャンネル処理でエラー:", err);
+  }
 });

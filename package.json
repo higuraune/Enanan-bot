@@ -1,7 +1,7 @@
 {
   "name": "enanan-bot",
   "version": "1.0.0",
-  "description": "えななんbotが生まれ変わったよ♪",
+  "description": "えななんbotが生まれ変わったよ♪\nなにかありましたらひぐ(@higu_wtc)までご連絡ください🖌",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
