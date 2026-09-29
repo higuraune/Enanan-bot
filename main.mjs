@@ -385,8 +385,10 @@ if (
 }
 });
 
+// 埋め込み対応
 import { EmbedBuilder } from "discord.js";
 
+// ===== 部屋番号変更通知 =====
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
@@ -396,17 +398,27 @@ client.on("messageCreate", async (message) => {
 
   const code = match[0];
 
-  // ① 色付き巨大埋め込み
+  // 更新した人の名前（ニックネーム優先）
+  const userName = message.member?.displayName || message.author.username;
+
+  // 更新者のアイコンURL
+  const iconURL = message.author.displayAvatarURL();
+
+  // ① 色付き埋め込み（アイコン＋名前入り）
   const embed = new EmbedBuilder()
-    .setColor(0x00bfff) // ← 好きな色に変更できる（今は水色）
-    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`) // ←巨大表示
+    .setColor(0xccaa88)
+    .setAuthor({
+      name: `${userName} さんが更新しました`,
+      iconURL: iconURL
+    })
+    .setTitle(`🔑 部屋番号が ${code} に変わったよ！`)
     .setDescription(`この部屋の番号は **${code}** に更新されたよ！`)
     .setTimestamp();
 
   await message.channel.send({ embeds: [embed] });
 
   // ② 別チャンネルへ書き込み & チャンネル名変更
-  const targetChannelId = "962288448679608370";
+  const targetChannelId = "962288448679608370"; // ← ここに別チャンネルのIDを指定する
 
   try {
     const targetChannel = await client.channels.fetch(targetChannelId);
@@ -414,9 +426,13 @@ client.on("messageCreate", async (message) => {
     // チャンネル名変更
     await targetChannel.setName(`部屋番号【${code}】`);
 
-    // 別チャンネルにも色付き巨大埋め込み
+    // 別チャンネルにも色付き巨大埋め込み（アイコン＋名前入り）
     const embed2 = new EmbedBuilder()
-      .setColor(0xff6699) // ←別チャンネルはピンクにしてみた
+      .setColor(0xffaacc)
+      .setAuthor({
+        name: `${userName} さんが更新しました`,
+        iconURL: iconURL
+      })
       .setTitle(`📨 新しい部屋番号: ${code}`)
       .setTimestamp();
 
