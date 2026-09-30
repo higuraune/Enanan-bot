@@ -45,13 +45,6 @@ if (!process.env.DISCORD_TOKEN) {
     process.exit(1);
 }
 
-console.log('🔄 Discord に接続中...');
-client.login(process.env.DISCORD_TOKEN)
-    .catch(error => {
-        console.error('❌ ログインに失敗しました:', error);
-        process.exit(1);
-    });
-
 // Express Webサーバーの設定（Render用）
 const app = express();
 const port = process.env.PORT || 3000;
@@ -76,6 +69,13 @@ if (process.env.RENDER_INSTANCE_ID && process.env.RENDER_INSTANCE_ID !== "0") {
   process.exit(0);
 }
 
+console.log('🔄 Discord に接続中...');
+client.login(process.env.DISCORD_TOKEN)
+    .catch(error => {
+        console.error('❌ ログインに失敗しました:', error);
+        process.exit(1);
+    });
+ 
 // 次鯖の回答記録
 let nextServerVotes = {
   yes: [],
