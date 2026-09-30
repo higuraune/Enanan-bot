@@ -63,11 +63,6 @@ app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
 
-// Render の多重起動対策：インスタンスIDが0以外なら終了
-if (process.env.RENDER_INSTANCE_ID && process.env.RENDER_INSTANCE_ID !== "0") {
-  console.log("🔁 他のインスタンスが起動したため終了します");
-  process.exit(0);
-}
 
 console.log('🔄 Discord に接続中...');
 client.login(process.env.DISCORD_TOKEN)
@@ -75,7 +70,7 @@ client.login(process.env.DISCORD_TOKEN)
         console.error('❌ ログインに失敗しました:', error);
         process.exit(1);
     });
- 
+
 // 次鯖の回答記録
 let nextServerVotes = {
   yes: [],
