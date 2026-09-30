@@ -13,12 +13,6 @@ import {
 import dotenv from "dotenv";
 import express from "express";
 
-// Render の多重起動対策：インスタンスIDが0以外なら終了
-if (process.env.RENDER_INSTANCE_ID && process.env.RENDER_INSTANCE_ID !== "0") {
-  console.log("🔁 他のインスタンスが起動したため終了します");
-  process.exit(0);
-}
-
 // .envファイルから環境変数を読み込み
 dotenv.config();
 
@@ -75,6 +69,12 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
+
+// Render の多重起動対策：インスタンスIDが0以外なら終了
+if (process.env.RENDER_INSTANCE_ID && process.env.RENDER_INSTANCE_ID !== "0") {
+  console.log("🔁 他のインスタンスが起動したため終了します");
+  process.exit(0);
+}
 
 // 次鯖の回答記録
 let nextServerVotes = {
