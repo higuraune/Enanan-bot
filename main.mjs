@@ -13,11 +13,6 @@ import {
 import dotenv from "dotenv";
 import express from "express";
 
-// Render の多重起動対策：インスタンスIDが0以外なら終了
-if (process.env.RENDER_INSTANCE_ID && process.env.RENDER_INSTANCE_ID !== "0") {
-  console.log("🔁 他のインスタンスが起動したため終了します");
-  process.exit(0);
-}
 
 // .envファイルから環境変数を読み込み
 dotenv.config();
@@ -75,6 +70,12 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
     console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
 });
+
+// Render の多重起動対策：インスタンスIDが0以外なら終了
+if (process.env.RENDER_INSTANCE_ID && process.env.RENDER_INSTANCE_ID !== "0") {
+  console.log("🔁 他のインスタンスが起動したため終了します");
+  process.exit(0);
+}
 
 // 次鯖の回答記録
 let nextServerVotes = {
@@ -409,7 +410,7 @@ function buildNextServerEmbed() {
   return new EmbedBuilder()
     .setColor(0x00bfff)
     .setTitle("⏰ 次鯖確認の時間です📝")
-    .setDescription("お手すきの際にボタンを押してください")
+    .setDescription("お手すきの際にボタンを押してね♪")
     .addFields(
       {
         name: "🔴 次鯖あり",
@@ -476,7 +477,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 31分くらいに通知
-    if (minute === 22 && second <= 3) {
+    if (minute === 26 && second <= 3) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
