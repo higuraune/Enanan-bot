@@ -476,7 +476,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 31分くらいに通知
-    if (minute === 10 && second <= 3) {
+    if (minute === 22 && second <= 3) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
