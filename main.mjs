@@ -12,10 +12,18 @@ import {
 } from "discord.js";
 import dotenv from "dotenv";
 import express from "express";
-import { Client, GatewayIntentBits } from "discord.js";
 
 // .envファイルから環境変数を読み込み
 dotenv.config();
+
+// ===============================
+// 🔥 多重起動防止（Render Free プラン対応）
+// ===============================
+if (global.instanceStarted) {
+  console.log("⚠️ 多重起動を検出しました（Render Free プラン）");
+  process.exit(0);
+}
+global.instanceStarted = true;
 
 // Discord Botクライアントを作成
 const client = new Client({
@@ -472,7 +480,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 31分くらいに通知
-    if (minute === 38 && second <= 3) {
+    if (minute === 41 && second <= 3) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
