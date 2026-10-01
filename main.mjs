@@ -440,8 +440,8 @@ function buildNextServerEmbed() {
 }
 
 
-// 次鯖通知を送るチャンネルID //ぽこ鯖
-const nextServerChannelId = "1554126226514378882";  // ← ここに次鯖通知を送るチャンネルのIDを指定する
+// 次鯖通知を送るチャンネルID
+const nextServerChannelId = "960074010920620085";
 
 // 次鯖通知の ON/OFF 状態
 let nextServerEnabled = false;
