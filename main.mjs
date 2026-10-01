@@ -17,30 +17,6 @@ import { Client, GatewayIntentBits } from "discord.js";
 // .envファイルから環境変数を読み込み
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 10000;
-
-// ===============================
-// 🔥 多重起動防止（Render Free プラン対応）
-// ===============================
-if (global.instanceStarted) {
-  console.log("⚠️ 多重起動を検出しました（Render Free プラン）");
-  process.exit(0);
-}
-global.instanceStarted = true;
-
-// ===============================
-// 🌐 Web サーバー起動
-// ===============================
-try {
-  app.get("/", (req, res) => res.send("Bot is running"));
-  app.listen(port, () => {
-    console.log(`🌐 Web サーバーがポート ${port} で起動しました`);
-  });
-} catch (e) {
-  console.log("⚠️ Web サーバーはすでに起動しています（多重起動防止）");
-}
-
 // Discord Botクライアントを作成
 const client = new Client({
     intents: [
