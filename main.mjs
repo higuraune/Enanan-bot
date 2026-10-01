@@ -581,7 +581,7 @@ client.on("messageCreate", async (message) => {
   await message.channel.send({ embeds: [embed] });
 
   // ② 別チャンネルへ書き込み & チャンネル名変更
-  const targetChannelId = "962288448679608370"; // ← ここに別チャンネルのIDを指定する
+  const targetChannelId = "1214980002597306378"; // ← ここに別チャンネルのIDを指定する
 
   try {
     const targetChannel = await client.channels.fetch(targetChannelId);
