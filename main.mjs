@@ -441,7 +441,7 @@ function buildNextServerEmbed() {
 
 
 // 次鯖通知を送るチャンネルID
-const nextServerChannelId = "960074010920620085";
+const nextServerChannelId = "1554126226514378882"; // ← ここに通知したいチャンネルのIDを指定する
 
 // 次鯖通知の ON/OFF 状態
 let nextServerEnabled = false;
@@ -477,7 +477,7 @@ client.once("ready", () => {
     const second = now.getSeconds();
 
     // ★ 毎時間 43分くらいに通知
-    if (minute === 28 && second === 0) {
+    if (minute === 29 && second === 0) {
       try {
         const channel = await client.channels.fetch(nextServerChannelId);
 
