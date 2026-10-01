@@ -465,9 +465,6 @@ client.on("messageCreate", async (message) => {
 
 client.once("ready", () => {
 
-  if (global.botStarted) return;
-  global.botStarted = true;
-
   console.log(`🎉 ${client.user.tag} が正常に起動しました！`);
   console.log(`📊 ${client.guilds.cache.size} つのサーバーに参加中`);
   console.log("⏱ 次鯖確認の時刻指定通知を開始します");
@@ -583,8 +580,8 @@ client.on("messageCreate", async (message) => {
 
   await message.channel.send({ embeds: [embed] });
 
-  // ② 別チャンネルへ書き込み & チャンネル名変更
-  const targetChannelId = "962288448679608370"; // ← ここに別チャンネルのIDを指定する
+  // ② 別チャンネルへ書き込み & チャンネル名変更 //ぽこ鯖
+  const targetChannelId = "1214980002597306378"; // ← ここに別チャンネルのIDを指定する
 
   try {
     const targetChannel = await client.channels.fetch(targetChannelId);
